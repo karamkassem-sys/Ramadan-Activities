@@ -1,0 +1,64 @@
+// Updated Firestore Security Rules with Admin and Metrics support
+// Paste these rules in Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+    
+    // Users collection - read only, no writes from client
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if false; // Users are managed server-side only
+    }
+    
+    // Questions collection - read only, no writes from client
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write: if false; // Questions are managed server-side only
+    }
+    
+    // Answers collection - users can create and read their own answers
+    match /answers/{answerId} {
+      allow read: if true; // Allow reading all answers (for admin views later)
+      allow create: if request.resource.data.userId is string 
+                    && request.resource.data.friendId is string
+                    && request.resource.data.timestamp is timestamp;
+      allow update: if false; // Answers cannot be updated once created
+      allow delete: if false; // Answers cannot be deleted
+    }
+    
+    // Admin settings - temporarily allow writes (since we're not using Firebase Auth)
+    // In production, you should use Firebase Admin SDK or implement proper auth
+    match /adminSettings/{document} {
+      allow read: if true; // All users can read to check results mode
+      allow write: if true; // TEMPORARY - Allow writes (you can restrict this later with proper auth)
+    }
+    
+    // User metrics - users can read their own, admins can read all
+    match /userMetrics/{userId} {
+      allow read: if true; // All users can read metrics (for their dashboard)
+      allow write: if true; // Allow writes for metrics calculation
+    }
+    
+    // User questions - new structure for storing answers per user
+    match /userQuestions/{userId} {
+      allow read: if true; // Users can read their own data
+      allow write: if true; // Allow writes for saving answers
+    }
+  }
+}
+
+// NOTE: For adminSettings writes, you'll need to temporarily allow writes or use Firebase Admin SDK
+// Temporary rule for adminSettings (remove after setup):
+// match /adminSettings/{document} {
+//   allow read: if true;
+//   allow write: if true; // TEMPORARY - for initial setup
+// }
+

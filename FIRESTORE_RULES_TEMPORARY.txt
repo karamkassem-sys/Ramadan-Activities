@@ -1,0 +1,32 @@
+// TEMPORARY Firestore Security Rules - Use this to add users
+// After adding users, switch back to FIRESTORE_RULES.txt
+// Paste these rules in Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users collection - TEMPORARILY allow writes to add users
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if true; // TEMPORARY - Change back to false after adding users
+    }
+    
+    // Questions collection - read only, no writes from client
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write: if false; // Questions are managed server-side only
+    }
+    
+    // Answers collection - users can create and read their own answers
+    match /answers/{answerId} {
+      allow read: if true; // Allow reading all answers (for admin views later)
+      allow create: if request.resource.data.userId is string 
+                    && request.resource.data.friendId is string
+                    && request.resource.data.timestamp is timestamp;
+      allow update: if false; // Answers cannot be updated once created
+      allow delete: if false; // Answers cannot be deleted
+    }
+  }
+}
+

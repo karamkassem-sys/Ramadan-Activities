@@ -1,0 +1,31 @@
+// Firestore Security Rules
+// Paste these rules in Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users collection - read only, no writes from client
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if false; // Users are managed server-side only
+    }
+    
+    // Questions collection - read only, no writes from client
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write: if false; // Questions are managed server-side only
+    }
+    
+    // Answers collection - users can create and read their own answers
+    match /answers/{answerId} {
+      allow read: if true; // Allow reading all answers (for admin views later)
+      allow create: if request.resource.data.userId is string 
+                    && request.resource.data.friendId is string
+                    && request.resource.data.timestamp is timestamp;
+      allow update: if false; // Answers cannot be updated once created
+      allow delete: if false; // Answers cannot be deleted
+    }
+  }
+}
+

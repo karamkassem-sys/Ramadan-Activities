@@ -48,9 +48,10 @@ const Countdown = ({ user, onLogout, startDate }) => {
             <div className="countdown-timer" style={{
                 display: 'flex',
                 justifyContent: 'center',
-                gap: '15px',
-                flexWrap: 'wrap',
-                marginBottom: '50px'
+                gap: '8px',
+                flexWrap: 'nowrap',
+                marginBottom: '50px',
+                padding: '0 5px'
             }}>
                 {[
                     { label: 'يوم', value: timeLeft.days },
@@ -59,17 +60,16 @@ const Countdown = ({ user, onLogout, startDate }) => {
                     { label: 'ثانية', value: timeLeft.seconds }
                 ].map((unit, i) => (
                     <div key={i} className="card" style={{
-                        minWidth: '80px',
-                        flex: '1 1 80px',
-                        maxWidth: '120px',
-                        padding: '12px 10px',
+                        flex: '1',
+                        minWidth: '0',
+                        padding: '10px 5px',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         borderColor: 'var(--muted-gold)'
                     }}>
-                        <span style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>{unit.value}</span>
-                        <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{unit.label}</span>
+                        <span style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>{unit.value}</span>
+                        <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>{unit.label}</span>
                     </div>
                 ))}
             </div>

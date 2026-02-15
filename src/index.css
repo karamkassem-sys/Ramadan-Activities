@@ -29,7 +29,6 @@ body {
     position: relative;
 }
 
-
 button {
     cursor: pointer;
     transition: all 0.2s ease;
@@ -45,4 +44,33 @@ button:active {
     border-radius: 15px;
     padding: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .ramadan-header h1 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 1.25rem;
+    }
+
+    .ramadan-header {
+        padding: 1rem;
+    }
+
+    .loading {
+        font-size: 1.1rem;
+    }
 }

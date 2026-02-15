@@ -152,8 +152,13 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
                 </button>
             </div>
 
-            <div ref={dashboardRef} style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '15px' }}>
-                <div className="daily-overview" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+            <div ref={dashboardRef} style={{ backgroundColor: '#fff', padding: '15px', borderRadius: '15px' }}>
+                <div className="daily-overview" style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '15px',
+                    marginBottom: '40px'
+                }}>
                     {dailyStats.map(s => (
                         <div key={s.slot} className="card" style={{ textAlign: 'center', backgroundColor: 'var(--off-white)', display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <h3 style={{ fontSize: '1rem', marginBottom: '10px', color: 'var(--night-blue)' }}>{s.title}</h3>
@@ -180,19 +185,19 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
 
                 <section style={{ marginBottom: '40px' }}>
                     <h2 style={{ marginBottom: '20px' }}>إجابات الفزورة</h2>
-                    <div className="card">
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '400px' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid var(--warm-sand)' }}>
-                                    <th style={{ padding: '10px', textAlign: 'right' }}>الاسم</th>
-                                    <th style={{ padding: '10px', textAlign: 'right' }}>الإجابة</th>
+                                    <th style={{ padding: '15px 10px', textAlign: 'right' }}>الاسم</th>
+                                    <th style={{ padding: '15px 10px', textAlign: 'right' }}>الإجابة</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {dailyRiddles.map((r, i) => (
                                     <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-                                        <td style={{ padding: '10px' }}>{r.userName}</td>
-                                        <td style={{ padding: '10px' }}>{r.answer}</td>
+                                        <td style={{ padding: '15px 10px' }}>{r.userName}</td>
+                                        <td style={{ padding: '15px 10px' }}>{r.answer}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -30,7 +30,12 @@ const LoginScreen = ({ onLogin }) => {
             padding: '20px',
             direction: 'rtl'
         }}>
-            <div className="card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+            <div className="card" style={{
+                maxWidth: '400px',
+                width: '100%',
+                textAlign: 'center',
+                margin: '0 auto'
+            }}>
                 <div style={{ marginBottom: '20px', color: 'var(--muted-gold)' }}>
                     <Moon size={64} style={{ fill: 'var(--muted-gold)' }} />
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '10px' }}>

@@ -92,12 +92,17 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
                 />
             )}
 
-            <main style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px' }}>
+            <main style={{
+                maxWidth: '800px',
+                margin: '20px auto',
+                padding: '0 15px'
+            }}>
                 <div className="card" style={{
                     position: 'relative',
                     backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#fff',
                     borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'var(--warm-sand)',
-                    color: isDarkMode ? '#fff' : 'inherit'
+                    color: isDarkMode ? '#fff' : 'inherit',
+                    padding: '1.5rem'
                 }}>
                     {markedAsDone && (
                         <div style={{

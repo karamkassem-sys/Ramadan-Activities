@@ -3,6 +3,7 @@ import LoginScreen from './components/LoginScreen';
 import Countdown from './components/Countdown';
 import ActivityScreen from './components/ActivityScreen';
 import AdminDashboard from './components/AdminDashboard';
+import BackgroundMusic from './components/BackgroundMusic';
 import { db, collection, query, where, getDocs } from './firebase/config';
 
 function App() {
@@ -58,19 +59,30 @@ function App() {
 
     if (loading) return <div className="loading">جاري التحميل...</div>;
 
-    if (!user) {
-        return <LoginScreen onLogin={handleLogin} />;
-    }
+    const renderScreen = () => {
+        if (!user) {
+            return <LoginScreen onLogin={handleLogin} />;
+        }
 
-    if (isAdmin && view === 'stats') {
-        return <AdminDashboard user={user} onLogout={handleLogout} setView={setView} />;
-    }
+        if (isAdmin && view === 'stats') {
+            return <AdminDashboard user={user} onLogout={handleLogout} setView={setView} />;
+        }
 
-    if (!isRamadanStarted) {
-        return <Countdown user={user} onLogout={handleLogout} startDate={RAMADAN_START_DATE} />;
-    }
+        if (!isRamadanStarted) {
+            return <Countdown user={user} onLogout={handleLogout} startDate={RAMADAN_START_DATE} />;
+        }
 
-    return <ActivityScreen user={user} onLogout={handleLogout} isAdmin={isAdmin} setView={setView} />;
+        return <ActivityScreen user={user} onLogout={handleLogout} isAdmin={isAdmin} setView={setView} />;
+    };
+
+    if (loading) return <div className="loading">جاري التحميل...</div>;
+
+    return (
+        <>
+            <BackgroundMusic />
+            {renderScreen()}
+        </>
+    );
 }
 
 export default App;

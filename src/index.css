@@ -1,62 +1,48 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+    --night-blue: #34495E;
+    --terracotta: #D9886A;
+    --warm-sand: #E5C3A6;
+    --off-white: #F2E9DE;
+    --muted-gold: #C5A059;
 }
 
-:root {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #2a2a2a;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --border: #333333;
-  --success: #10b981;
-  --error: #ef4444;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  font-family: 'Cairo', sans-serif;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  direction: rtl;
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--off-white);
+    color: var(--night-blue);
+    min-height: 100vh;
 }
 
-#root {
-  min-height: 100vh;
-  width: 100%;
+/* Ramadanic Header Styling */
+.ramadan-header {
+    background-color: var(--night-blue);
+    color: var(--off-white);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 3px solid var(--muted-gold);
+    position: relative;
 }
+
 
 button {
-  font-family: 'Cairo', sans-serif;
-  cursor: pointer;
-  border: none;
-  outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-input, textarea {
-  font-family: 'Cairo', sans-serif;
-  outline: none;
+button:active {
+    transform: scale(0.95);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
+.card {
+    background-color: var(--off-white);
+    border: 1px solid var(--warm-sand);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
-
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border);
-}
-

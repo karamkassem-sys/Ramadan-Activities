@@ -26,9 +26,13 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
     }, []);
 
     useEffect(() => {
-        if (currentSlot && !dataLoading) {
-            const act = getActivityForDayAndSlot(currentDay, currentSlot);
-            setActivity(act);
+        if (!dataLoading) {
+            if (currentSlot) {
+                const act = getActivityForDayAndSlot(currentDay, currentSlot);
+                setActivity(act);
+            } else {
+                setActivity(null);
+            }
         }
     }, [currentDay, currentSlot, dataLoading, getActivityForDayAndSlot]);
 
@@ -83,105 +87,115 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
             color: isDarkMode ? '#fff' : 'var(--night-blue)',
             transition: 'all 0.5s ease'
         }}>
-            {activity && (
-                <ActivityHeader
-                    title={activity.title}
-                    day={currentDay}
-                    isAdmin={isAdmin}
-                    onToggleStats={() => setView('stats')}
-                />
-            )}
+            <ActivityHeader
+                title={activity?.title || 'استراحة'}
+                day={currentDay}
+                isAdmin={isAdmin}
+                onToggleStats={() => setView('stats')}
+            />
 
             <main style={{
                 maxWidth: '800px',
                 margin: '20px auto',
                 padding: '0 15px'
             }}>
-                <div className="card" style={{
+                <div className="card" id="activity-card" style={{
                     position: 'relative',
                     backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#fff',
                     borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'var(--warm-sand)',
                     color: isDarkMode ? '#fff' : 'inherit',
-                    padding: '1.5rem'
+                    padding: '1.5rem',
+                    textAlign: !activity ? 'center' : 'right'
                 }}>
-                    {markedAsDone && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '10px',
-                            left: '10px',
-                            color: 'var(--terracotta)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px'
-                        }}>
-                            <CheckCircle size={20} />
-                            <span>تم الإنجاز</span>
+                    {!activity ? (
+                        <div id="gap-message" style={{ padding: '40px 0' }}>
+                            <h2 style={{ fontSize: '1.5rem', marginBottom: '20px' }}>تقبل الله طاعاتكم</h2>
+                            <p style={{ fontSize: '1.1rem', opacity: 0.8 }}>لا يوجد نشاط متاح حالياً. يرجى الانتظار لموعد النشاط القادم.</p>
                         </div>
-                    )}
-
-                    <div className="activity-content" style={{ marginTop: '20px' }}>
-                        {currentSlot === 5 ? (
-                            <div className="riddle-section">
-                                <p style={{ fontSize: '1.2rem', lineHeight: '1.8', marginBottom: '30px' }}>{activity?.question}</p>
-                                <input
-                                    type="text"
-                                    placeholder="اكتب إجابتك هنا..."
-                                    value={riddleAnswer}
-                                    onChange={(e) => setRiddleAnswer(e.target.value)}
-                                    disabled={markedAsDone}
-                                    style={{
-                                        width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '10px',
-                                        border: isDarkMode ? '2px solid rgba(255,255,255,0.2)' : '2px solid var(--warm-sand)',
-                                        background: isDarkMode ? 'rgba(0,0,0,0.2)' : '#fff',
-                                        color: isDarkMode ? '#fff' : 'inherit',
-                                        fontSize: '1.1rem',
-                                        fontFamily: 'Cairo',
-                                        marginBottom: '20px'
-                                    }}
-                                />
-                            </div>
-                        ) : (
-                            <div className="lesson-section">
-                                <p style={{
-                                    whiteSpace: 'pre-wrap',
-                                    fontSize: '1.1rem',
-                                    lineHeight: '1.8'
+                    ) : (
+                        <>
+                            {markedAsDone && (
+                                <div id="done-indicator" style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '10px',
+                                    color: 'var(--terracotta)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '5px'
                                 }}>
-                                    {activity?.content}
-                                </p>
-                            </div>
-                        )}
-                    </div>
+                                    <CheckCircle size={20} />
+                                    <span>تم الإنجاز</span>
+                                </div>
+                            )}
 
-                    <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                        <button
-                            onClick={handleAction}
-                            disabled={markedAsDone || (currentSlot === 5 && !riddleAnswer)}
-                            style={{
-                                backgroundColor: markedAsDone ? '#ccc' : 'var(--terracotta)',
-                                color: 'white',
-                                border: 'none',
-                                padding: '15px 40px',
-                                borderRadius: '30px',
-                                fontSize: '1.2rem',
-                                fontWeight: 'bold',
-                                fontFamily: 'Cairo',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '10px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            {currentSlot === 1 ? 'تقبل الله' : 'تم'}
-                            <Send size={20} />
-                        </button>
-                    </div>
+                            <div className="activity-content" style={{ marginTop: '20px' }}>
+                                {currentSlot === 5 ? (
+                                    <div className="riddle-section">
+                                        <p style={{ fontSize: '1.2rem', lineHeight: '1.8', marginBottom: '30px' }}>{activity?.question}</p>
+                                        <input
+                                            id="riddle-input"
+                                            type="text"
+                                            placeholder="اكتب إجابتك هنا..."
+                                            value={riddleAnswer}
+                                            onChange={(e) => setRiddleAnswer(e.target.value)}
+                                            disabled={markedAsDone}
+                                            style={{
+                                                width: '100%',
+                                                padding: '15px',
+                                                borderRadius: '10px',
+                                                border: isDarkMode ? '2px solid rgba(255,255,255,0.2)' : '2px solid var(--warm-sand)',
+                                                background: isDarkMode ? 'rgba(0,0,0,0.2)' : '#fff',
+                                                color: isDarkMode ? '#fff' : 'inherit',
+                                                fontSize: '1.1rem',
+                                                fontFamily: 'Cairo',
+                                                marginBottom: '20px'
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="lesson-section">
+                                        <p style={{
+                                            whiteSpace: 'pre-wrap',
+                                            fontSize: '1.1rem',
+                                            lineHeight: '1.8'
+                                        }}>
+                                            {activity?.content}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div style={{ marginTop: '40px', textAlign: 'center' }}>
+                                <button
+                                    id="action-button"
+                                    onClick={handleAction}
+                                    disabled={markedAsDone || (currentSlot === 5 && !riddleAnswer)}
+                                    style={{
+                                        backgroundColor: markedAsDone ? '#ccc' : 'var(--terracotta)',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '15px 40px',
+                                        borderRadius: '30px',
+                                        fontSize: '1.2rem',
+                                        fontWeight: 'bold',
+                                        fontFamily: 'Cairo',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '10px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {currentSlot === 1 ? 'تقبل الله' : 'تم'}
+                                    <Send size={20} />
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                    <button onClick={onLogout} style={{
+                    <button id="logout-button" onClick={onLogout} style={{
                         color: isDarkMode ? 'rgba(255,255,255,0.6)' : 'var(--night-blue)',
                         opacity: 0.6,
                         background: 'none',

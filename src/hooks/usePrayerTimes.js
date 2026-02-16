@@ -34,10 +34,12 @@ export const usePrayerTimes = () => {
         const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
         // Aladhan returns times in "HH:mm" format
-        const { Fajr, Dhuhr, Asr, Maghrib, Isha } = times;
+        const { Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha } = times;
 
-        if (currentTime >= Fajr && currentTime < Dhuhr) {
-            setCurrentSlot(1); // Fajr to Dhuhr
+        if (currentTime >= Fajr && currentTime < Sunrise) {
+            setCurrentSlot(1); // Fajr to Sunrise
+        } else if (currentTime >= Sunrise && currentTime < Dhuhr) {
+            setCurrentSlot(null); // Gap between Sunrise and Dhuhr
         } else if (currentTime >= Dhuhr && currentTime < Asr) {
             setCurrentSlot(2); // Dhuhr to Asr
         } else if (currentTime >= Asr && currentTime < Maghrib) {

@@ -7,7 +7,7 @@ import { CheckCircle, Send, LogOut } from 'lucide-react';
 
 const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
     const { getActivityForDayAndSlot, loading: dataLoading } = useRamadanData();
-    const { currentSlot, timings, loading: timesLoading } = usePrayerTimes();
+    const { currentSlot, timings, loading: timesLoading, timezone } = usePrayerTimes(user.city || 'Beirut', user.country || 'Lebanon');
 
     const [currentDay, setCurrentDay] = useState(1);
     const [activity, setActivity] = useState(null);
@@ -18,12 +18,16 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
 
     useEffect(() => {
         // Calculate current day of Ramadan based on start date 2026-02-18
+        // Using the timezone returned by the API for accuracy
         const RAMADAN_START = new Date('2026-02-18T00:00:00');
-        const now = new Date();
-        const diffTime = now - RAMADAN_START;
+
+        // Get current date in target timezone
+        const nowInTimezone = new Date(new Date().toLocaleString('en-US', { timeZone: timezone }));
+
+        const diffTime = nowInTimezone - RAMADAN_START;
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
         setCurrentDay(diffDays < 1 ? 1 : (diffDays > 30 ? 30 : diffDays));
-    }, []);
+    }, [timezone]);
 
     useEffect(() => {
         if (!dataLoading) {

@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react';
 
-export const usePrayerTimes = () => {
+export const usePrayerTimes = (city = 'Beirut', country = 'Lebanon') => {
     const [timings, setTimings] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentSlot, setCurrentSlot] = useState(null);
+    const [timezone, setTimezone] = useState('Asia/Beirut');
 
     useEffect(() => {
         const fetchTimings = async () => {
+            setLoading(true);
             try {
-                // Using Aladhan API for Beirut, Lebanon with Method 8 (Shia Ithna-Ashari)
-                const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Beirut&country=Lebanon&method=8');
+                // Using Aladhan API with Method 8 (Shia Ithna-Ashari)
+                const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=8`);
                 const data = await response.json();
 
                 if (data.code === 200) {
                     setTimings(data.data.timings);
+                    setTimezone(data.data.meta.timezone);
                     determineSlot(data.data.timings);
                 } else {
                     setError('Failed to fetch prayer times');
@@ -27,11 +30,13 @@ export const usePrayerTimes = () => {
         };
 
         fetchTimings();
-    }, []);
+    }, [city, country]);
 
     const determineSlot = (times) => {
-        const now = new Date();
-        const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        // Use Intl.DateTimeFormat to get the current time in the target timezone
+        const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+        const formatter = new Intl.DateTimeFormat('en-US', { ...options, timeZone: timezone });
+        const currentTime = formatter.format(new Date());
 
         // Aladhan returns times in "HH:mm" format
         const { Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha } = times;
@@ -51,5 +56,5 @@ export const usePrayerTimes = () => {
         }
     };
 
-    return { timings, loading, error, currentSlot };
+    return { timings, loading, error, currentSlot, timezone };
 };

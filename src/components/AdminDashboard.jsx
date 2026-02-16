@@ -37,6 +37,33 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
         fetchData();
     }, []);
 
+    const runMigration = async () => {
+        const updates = [
+            { id: '1FlOqqpbBwrkvJDVdGLA', name: 'محمد صلح', city: 'Paris', country: 'France' },
+            { id: 'VsUN4VpyWEUGoQeSIoBQ', name: 'مصطفى شبشول', city: 'Paris', country: 'France' },
+            { id: 'nd0LWQkJBbnMdLmSRheQ', name: 'حيدر إسبر', city: 'Paris', country: 'France' },
+            { id: 'nlKkV5m0HTtUlhtluYlJ', name: 'نديم عبدالجليل', city: 'Paris', country: 'France' },
+            { id: 'puDaE9XhsPL9ElIFotce', name: 'عبد المجيد الرفاعي', city: 'Calgary', country: 'Canada' },
+            { id: 'RDEDI2u1JIYWA4I1lBRb', name: 'أحمد ناصر', city: 'Abuja', country: 'Nigeria' }
+        ];
+
+        try {
+            const { updateDoc, doc } = await import('../firebase/config');
+            for (const item of updates) {
+                const userRef = doc(db, 'users', item.id);
+                await updateDoc(userRef, {
+                    city: item.city,
+                    country: item.country
+                });
+            }
+            alert('تم تحديث بيانات المواقع بنجاح!');
+            window.location.reload();
+        } catch (err) {
+            console.error("Migration error:", err);
+            alert('حدث خطأ أثناء التحديث');
+        }
+    };
+
     const getDailyStats = (day) => {
         const dailyActivities = activitiesViewed.filter(a => a.day === day);
         const dailyRiddles = riddleAnswers.filter(r => r.day === day);
@@ -122,6 +149,20 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                 <h1 style={{ color: 'var(--night-blue)' }}>لوحة التحكم - المسؤول</h1>
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                    <button
+                        onClick={runMigration}
+                        style={{
+                            background: 'var(--terracotta)',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 15px',
+                            borderRadius: '8px',
+                            fontFamily: 'Cairo',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        تحديث المواقع (مرة واحدة)
+                    </button>
                     <button
                         onClick={() => setView('activity')}
                         style={{

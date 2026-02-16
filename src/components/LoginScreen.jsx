@@ -43,7 +43,7 @@ const LoginScreen = ({ onLogin }) => {
                     </div>
                 </div>
 
-                <h1 style={{ color: 'var(--night-blue)', marginBottom: '10px' }}>نظام رمضان للأصدقاء</h1>
+                <h1 style={{ color: 'var(--night-blue)', marginBottom: '10px' }}>موسم رمضان</h1>
                 <p style={{ color: 'var(--night-blue)', opacity: 0.8, marginBottom: '30px' }}>أهلاً بك! يرجى إدخال الكود الخاص بك للدخول</p>
 
                 <form onSubmit={handleSubmit}>

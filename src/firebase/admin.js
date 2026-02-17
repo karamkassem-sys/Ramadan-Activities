@@ -19,7 +19,7 @@ export const getResultsMode = async () => {
   try {
     const adminRef = doc(db, 'adminSettings', 'resultsMode')
     const adminSnap = await getDoc(adminRef)
-    
+
     if (adminSnap.exists()) {
       return adminSnap.data().enabled || false
     }

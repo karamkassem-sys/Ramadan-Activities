@@ -13,7 +13,7 @@ function App() {
     const [isRamadanStarted, setIsRamadanStarted] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const RAMADAN_START_DATE = new Date('2026-02-18T00:00:00');
+    const RAMADAN_START_DATE = new Date('2026-02-18T04:49:00');
 
     useEffect(() => {
         // Check local storage for session

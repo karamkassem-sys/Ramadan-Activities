@@ -77,7 +77,7 @@ const Countdown = ({ user, onLogout, startDate }) => {
             <div style={{ color: 'var(--night-blue)' }}>
                 <Bell size={48} style={{ marginBottom: '10px', opacity: 0.5 }} />
                 <h3>استعد للنفحات الرمضانية</h3>
-                <p style={{ opacity: 0.6 }}>سيبدأ النظام في 18 فبراير 2026 إن شاء الله</p>
+                <p style={{ opacity: 0.6 }}>سيبدأ النظام مع صلاة الفجر في 18 فبراير 2026 إن شاء الله</p>
             </div>
 
             <button

@@ -4,7 +4,7 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell
 } from 'recharts';
-import { Download, Share2, ChevronLeft, ChevronRight, Trophy, LogOut } from 'lucide-react';
+import { Download, Share2, ChevronLeft, ChevronRight, Trophy, LogOut, Copy } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 const AdminDashboard = ({ user, onLogout, setView }) => {
@@ -120,6 +120,23 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
 
         navigator.clipboard.writeText(text);
         alert('تم نسخ التقرير للواتساب!');
+    };
+
+    const copyLeaderboard = () => {
+        const leaderboard = getLeaderboard();
+        if (leaderboard.length === 0) {
+            alert('لا يوجد بيانات لوحة المتصدرين حالياً');
+            return;
+        }
+
+        let text = `🏆 *لوحة المتصدرين (بصمة مصلي)* 🌙\n\n`;
+        leaderboard.forEach((p, i) => {
+            const medal = i === 0 ? '🥇 ' : (i === 1 ? '🥈 ' : (i === 2 ? '🥉 ' : '👤 '));
+            text += `${medal}*${p.name}*: ${p.count} يوم\n`;
+        });
+
+        navigator.clipboard.writeText(text);
+        alert('تم نسخ لوحة المتصدرين للواتساب!');
     };
 
     const getAggregateData = () => {
@@ -262,7 +279,27 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
                     </section>
 
                     <section>
-                        <h2 style={{ marginBottom: '20px' }}>لوحة المتصدرين (بصمة مصلي)</h2>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0 }}>لوحة المتصدرين (بصمة مصلي)</h2>
+                            <button
+                                onClick={copyLeaderboard}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '5px',
+                                    padding: '5px 12px',
+                                    background: 'var(--night-blue)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9rem',
+                                    fontFamily: 'Cairo'
+                                }}
+                            >
+                                <Copy size={16} /> نسخ للواتساب
+                            </button>
+                        </div>
                         <div className="card">
                             {getLeaderboard().map((p, i) => (
                                 <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < 4 ? '1px solid #eee' : 'none' }}>

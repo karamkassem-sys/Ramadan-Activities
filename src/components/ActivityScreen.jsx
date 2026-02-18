@@ -148,7 +148,7 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
 
     if (dataLoading || timesLoading) return <div className="loading">جاري تحميل النشاط...</div>;
 
-    const isDarkMode = currentSlot === 1 || currentSlot === 5;
+    const isDarkMode = currentSlot === 1 || currentSlot === 4 || currentSlot === 5;
 
     return (
         <div className="activity-container" style={{

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRamadanData } from '../hooks/useRamadanData';
 import { usePrayerTimes } from '../hooks/usePrayerTimes';
 import ActivityHeader from './ActivityHeader';
-import { db, collection, addDoc } from '../firebase/config';
+import { db, collection, addDoc, query, where, getDocs } from '../firebase/config';
 import { CheckCircle, Send, LogOut } from 'lucide-react';
 
 const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
@@ -40,10 +40,77 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
         }
     }, [currentDay, currentSlot, dataLoading, getActivityForDayAndSlot]);
 
+    // Check if user has already completed this activity
+    useEffect(() => {
+        const checkStatus = async () => {
+            if (user && currentDay && currentSlot) {
+                try {
+                    const q = query(
+                        collection(db, 'activities_viewed'),
+                        where('userId', '==', user.id),
+                        where('day', '==', currentDay),
+                        where('slot', '==', currentSlot)
+                    );
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        setMarkedAsDone(true);
+
+                        // If it's a riddle, try to fetch the answer
+                        if (currentSlot === 5) {
+                            const riddleQ = query(
+                                collection(db, 'riddle_answers'),
+                                where('userId', '==', user.id),
+                                where('day', '==', currentDay)
+                            );
+                            const riddleSnapshot = await getDocs(riddleQ);
+                            if (!riddleSnapshot.empty) {
+                                setRiddleAnswer(riddleSnapshot.docs[0].data().answer || '');
+                            }
+                        }
+                    } else {
+                        setMarkedAsDone(false);
+                        setRiddleAnswer('');
+                    }
+                } catch (err) {
+                    console.error("Error checking activity status:", err);
+                }
+            }
+        };
+
+        checkStatus();
+    }, [user, currentDay, currentSlot]);
+
     const handleAction = async () => {
-        if (!activity) return;
+        if (!activity || markedAsDone) return;
 
         try {
+            // Final check to prevent race conditions or UI bypass
+            const q = query(
+                collection(db, 'activities_viewed'),
+                where('userId', '==', user.id),
+                where('day', '==', currentDay),
+                where('slot', '==', currentSlot)
+            );
+            const querySnapshot = await getDocs(q);
+
+            // Also check riddle_answers if it's the riddle slot
+            let alreadyAnswered = false;
+            if (currentSlot === 5) {
+                const riddleQ = query(
+                    collection(db, 'riddle_answers'),
+                    where('userId', '==', user.id),
+                    where('day', '==', currentDay)
+                );
+                const riddleSnapshot = await getDocs(riddleQ);
+                alreadyAnswered = !riddleSnapshot.empty;
+            }
+
+            if (!querySnapshot.empty || alreadyAnswered) {
+                setMarkedAsDone(true);
+                setDialogMessage('لقد قمت بهذا النشاط مسبقاً');
+                setShowDialog(true);
+                return;
+            }
             // Save primary activity view to 'activities_viewed'
             await addDoc(collection(db, 'activities_viewed'), {
                 userId: user.id,

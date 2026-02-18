@@ -148,15 +148,35 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
     };
 
     const getLeaderboard = () => {
-        const slot1Counts = {};
+        const userStats = {};
+
         activitiesViewed.filter(a => a.slot === 1).forEach(a => {
-            slot1Counts[a.userName] = (slot1Counts[a.userName] || 0) + 1;
+            const userId = a.userId || a.userName; // Fallback to userName if userId is missing
+            const timestamp = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+
+            if (!userStats[userId]) {
+                userStats[userId] = {
+                    name: a.userName,
+                    count: 0,
+                    lastTimestamp: timestamp
+                };
+            }
+
+            userStats[userId].count += 1;
+            // Update to the latest activity timestamp for this user
+            if (timestamp > userStats[userId].lastTimestamp) {
+                userStats[userId].lastTimestamp = timestamp;
+            }
         });
 
-        return Object.entries(slot1Counts)
-            .map(([name, count]) => ({ name, count }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 5);
+        return Object.values(userStats)
+            .sort((a, b) => {
+                if (b.count !== a.count) {
+                    return b.count - a.count; // Primary sort: days descending
+                }
+                // Secondary sort (tie-breaker): earliest last activity wins
+                return a.lastTimestamp - b.lastTimestamp;
+            });
     };
 
     if (loading) return <div className="loading">جاري تحميل الإحصائيات...</div>;
@@ -300,11 +320,14 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
                                 <Copy size={16} /> نسخ للواتساب
                             </button>
                         </div>
-                        <div className="card">
+                        <div className="card" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                             {getLeaderboard().map((p, i) => (
-                                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < 4 ? '1px solid #eee' : 'none' }}>
+                                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < getLeaderboard().length - 1 ? '1px solid #eee' : 'none' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        {i === 0 && <Trophy size={20} color="var(--muted-gold)" />}
+                                        {i === 0 ? <Trophy size={20} color="var(--muted-gold)" /> :
+                                            i === 1 ? <Trophy size={20} color="#C0C0C0" /> :
+                                                i === 2 ? <Trophy size={20} color="#CD7F32" /> :
+                                                    <span style={{ width: '20px', textAlign: 'center', fontSize: '0.8rem', opacity: 0.5 }}>{i + 1}</span>}
                                         <span>{p.name}</span>
                                     </div>
                                     <span style={{ fontWeight: 'bold' }}>{p.count} يوم</span>

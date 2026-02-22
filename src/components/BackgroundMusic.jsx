@@ -6,33 +6,7 @@ const BackgroundMusic = () => {
     const audioRef = useRef(null);
 
     useEffect(() => {
-        // Attempt to play on mount
-        const playAudio = async () => {
-            try {
-                if (audioRef.current) {
-                    await audioRef.current.play();
-                    setIsPlaying(true);
-                }
-            } catch (err) {
-                console.log("Autoplay blocked. Waiting for user interaction.");
-                setIsPlaying(false);
-            }
-        };
-
-        playAudio();
-
-        // Global click listener to start audio if autoplay was blocked
-        const handleFirstInteraction = () => {
-            if (audioRef.current && audioRef.current.paused && !isPlaying) {
-                audioRef.current.play().then(() => {
-                    setIsPlaying(true);
-                    window.removeEventListener('click', handleFirstInteraction);
-                }).catch(e => console.error("Interaction play failed:", e));
-            }
-        };
-
-        window.addEventListener('click', handleFirstInteraction);
-        return () => window.removeEventListener('click', handleFirstInteraction);
+        // Music only plays when explicitly toggled by the user
     }, []);
 
     const toggleMusic = () => {

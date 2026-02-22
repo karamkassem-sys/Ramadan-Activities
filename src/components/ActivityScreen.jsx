@@ -161,6 +161,7 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
             <ActivityHeader
                 title={activity?.title || 'استراحة'}
                 day={currentDay}
+                slot={currentSlot}
                 isAdmin={isAdmin}
                 onToggleStats={() => setView('stats')}
             />

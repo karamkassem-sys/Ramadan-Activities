@@ -13,6 +13,7 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
     const [activity, setActivity] = useState(null);
     const [markedAsDone, setMarkedAsDone] = useState(false);
     const [riddleAnswer, setRiddleAnswer] = useState('');
+    const [statusChecked, setStatusChecked] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
     const [dialogMessage, setDialogMessage] = useState('');
 
@@ -73,6 +74,8 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
                     }
                 } catch (err) {
                     console.error("Error checking activity status:", err);
+                } finally {
+                    setStatusChecked(true);
                 }
             }
         };
@@ -146,7 +149,20 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
         }
     };
 
-    if (dataLoading || timesLoading) return <div className="loading">جاري تحميل النشاط...</div>;
+    if (dataLoading || timesLoading) return (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            fontFamily: 'Cairo',
+            fontSize: '1.2rem',
+            color: 'var(--night-blue)',
+            backgroundColor: 'var(--off-white)' // Ensure consistency with theme
+        }}>
+            جاري تحميل النشاط...
+        </div>
+    );
 
     const isDarkMode = currentSlot === 1 || currentSlot === 4 || currentSlot === 5;
 
@@ -242,9 +258,9 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
                                 <button
                                     id="action-button"
                                     onClick={handleAction}
-                                    disabled={markedAsDone || (currentSlot === 5 && !riddleAnswer)}
+                                    disabled={!statusChecked || markedAsDone || (currentSlot === 5 && !riddleAnswer)}
                                     style={{
-                                        backgroundColor: markedAsDone ? '#ccc' : 'var(--terracotta)',
+                                        backgroundColor: (!statusChecked || markedAsDone) ? '#ccc' : 'var(--terracotta)',
                                         color: 'white',
                                         border: 'none',
                                         padding: '15px 40px',

@@ -159,7 +159,19 @@ const AdminDashboard = ({ user, onLogout, setView }) => {
             });
     };
 
-    if (loading) return <div className="loading">جاري تحميل الإحصائيات...</div>;
+    if (loading) return (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            fontFamily: 'Cairo',
+            fontSize: '1.2rem',
+            color: 'var(--night-blue)'
+        }}>
+            جاري تحميل الإحصائيات...
+        </div>
+    );
 
     return (
         <div className="admin-dashboard" style={{ direction: 'rtl', padding: '20px', backgroundColor: '#f9f9f9', minHeight: '100vh', fontFamily: 'Cairo' }}>

@@ -41,7 +41,9 @@ export const usePrayerTimes = (city = 'Beirut', country = 'Lebanon') => {
         // Aladhan returns times in "HH:mm" format
         const { Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha } = times;
 
-        if (currentTime >= Fajr && currentTime < Sunrise) {
+        if (currentTime < Fajr) {
+            setCurrentSlot(null); // After midnight and before Fajr
+        } else if (currentTime >= Fajr && currentTime < Sunrise) {
             setCurrentSlot(1); // Fajr to Sunrise
         } else if (currentTime >= Sunrise && currentTime < Dhuhr) {
             setCurrentSlot(null); // Gap between Sunrise and Dhuhr
@@ -51,8 +53,10 @@ export const usePrayerTimes = (city = 'Beirut', country = 'Lebanon') => {
             setCurrentSlot(3); // Asr to Maghrib
         } else if (currentTime >= Maghrib && currentTime < Isha) {
             setCurrentSlot(4); // Maghrib to Isha
+        } else if (currentTime >= Isha) {
+            setCurrentSlot(5); // Isha until midnight
         } else {
-            setCurrentSlot(5); // Isha to Fajr (next day)
+            setCurrentSlot(null);
         }
     };
 

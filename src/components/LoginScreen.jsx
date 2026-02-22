@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Moon, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 const LoginScreen = ({ onLogin }) => {
     const [code, setCode] = useState('');
@@ -37,7 +37,6 @@ const LoginScreen = ({ onLogin }) => {
                 margin: '0 auto'
             }}>
                 <div style={{ marginBottom: '20px', color: 'var(--muted-gold)' }}>
-                    <Moon size={64} style={{ fill: 'var(--muted-gold)' }} />
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '10px' }}>
                         <Star size={16} /><Star size={24} /><Star size={16} />
                     </div>

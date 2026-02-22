@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import { useRamadanData } from '../hooks/useRamadanData';
 import { usePrayerTimes } from '../hooks/usePrayerTimes';
 import ActivityHeader from './ActivityHeader';
-import { db, collection, addDoc, query, where, getDocs } from '../firebase/config';
+import PointsDrawer from './PointsDrawer';
+import { useNotifications } from '../hooks/useNotifications';
+import { db, collection, addDoc, query, where, getDocs, doc, setDoc, increment } from '../firebase/config';
 import { CheckCircle, Send, LogOut } from 'lucide-react';
 
 const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
     const { getActivityForDayAndSlot, loading: dataLoading } = useRamadanData();
     const { currentSlot, timings, loading: timesLoading, timezone } = usePrayerTimes(user.city || 'Beirut', user.country || 'Lebanon');
+    useNotifications(user);
 
     const [currentDay, setCurrentDay] = useState(1);
     const [activity, setActivity] = useState(null);
@@ -139,6 +142,18 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
                 setDialogMessage('منا ومنكم !');
             } else {
                 setDialogMessage('أحسنت');
+            }
+
+            // --- AWARD POINTS (Slots 2, 3, 4, 5) ---
+            if (currentSlot >= 2 && currentSlot <= 5) {
+                const pointsRef = doc(db, 'points', user.id);
+                await setDoc(pointsRef, {
+                    userId: user.id,
+                    userName: user.name,
+                    activityCompletions: increment(1),
+                    manualAdjustment: increment(0), // Initialize if not exists
+                    totalPoints: increment(1)
+                }, { merge: true });
             }
 
             setMarkedAsDone(true);
@@ -327,6 +342,8 @@ const ActivityScreen = ({ user, onLogout, isAdmin, setView }) => {
                     </div>
                 </div>
             )}
+
+            <PointsDrawer user={user} isDarkMode={isDarkMode} />
         </div>
     );
 };

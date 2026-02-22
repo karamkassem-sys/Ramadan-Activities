@@ -1,11 +1,10 @@
-import { Moon, Star, BarChart2 } from 'lucide-react';
+import { Star, BarChart2 } from 'lucide-react';
 
 const ActivityHeader = ({ title, day, slot, isAdmin, onToggleStats }) => {
     return (
         <div className="ramadan-header">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '800px', margin: '0 auto', position: 'relative' }}>
                 <div style={{ color: 'var(--muted-gold)' }}>
-                    {slot !== 2 && <Moon size={24} fill="var(--muted-gold)" />}
                 </div>
 
                 <div style={{ textAlign: 'center' }}>

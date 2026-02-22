@@ -11,6 +11,7 @@ function App() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [view, setView] = useState('activity'); // 'activity' or 'stats'
     const [isRamadanStarted, setIsRamadanStarted] = useState(false);
+    const [showWelcome, setShowWelcome] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const RAMADAN_START_DATE = new Date('2026-02-18T04:49:00');
@@ -22,6 +23,10 @@ function App() {
             const userData = JSON.parse(storedUser);
             setUser(userData);
             setIsAdmin(userData.admin === true || userData.role === 'admin');
+
+            // Show welcome message on entry
+            setShowWelcome(true);
+            setTimeout(() => setShowWelcome(false), 4000);
         }
 
         // Check if Ramadan has started
@@ -42,6 +47,11 @@ function App() {
                 setUser(userData);
                 setIsAdmin(userData.admin === true || userData.role === 'admin');
                 localStorage.setItem('ramadan_user', JSON.stringify(userData));
+
+                // Show welcome message on login
+                setShowWelcome(true);
+                setTimeout(() => setShowWelcome(false), 4000);
+
                 return { success: true };
             }
             return { success: false, message: 'كود غير صحيح' };
@@ -75,11 +85,40 @@ function App() {
         return <ActivityScreen user={user} onLogout={handleLogout} isAdmin={isAdmin} setView={setView} />;
     };
 
-    if (loading) return <div className="loading">جاري التحميل...</div>;
-
     return (
         <>
             <BackgroundMusic />
+            {showWelcome && user && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: 'var(--night-blue)',
+                    color: 'white',
+                    padding: '12px 30px',
+                    borderRadius: '50px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                    zIndex: 9999,
+                    animation: 'fadeInOut 4s ease-in-out forwards',
+                    fontFamily: 'Cairo',
+                    border: '2px solid var(--muted-gold)',
+                    textAlign: 'center',
+                    minWidth: '200px'
+                }}>
+                    أهلاً وسهلاً {user.name}
+                </div>
+            )}
+            <style>
+                {`
+                    @keyframes fadeInOut {
+                        0% { opacity: 0; top: -50px; }
+                        15% { opacity: 1; top: 20px; }
+                        85% { opacity: 1; top: 20px; }
+                        100% { opacity: 0; top: -50px; }
+                    }
+                `}
+            </style>
             {renderScreen()}
         </>
     );

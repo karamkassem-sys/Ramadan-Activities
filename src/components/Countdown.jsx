@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, Star, Bell } from 'lucide-react';
+import { Star, Bell } from 'lucide-react';
 
 const Countdown = ({ user, onLogout, startDate }) => {
     const [timeLeft, setTimeLeft] = useState({

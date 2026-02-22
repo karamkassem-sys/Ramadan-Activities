@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, getDocs, query, where, doc, setDoc, updateDoc, getDoc } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, getDocs, query, where, doc, setDoc, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore'
+import { getMessaging } from 'firebase/messaging'
 
 // Firebase configuration
 const firebaseConfig = {
@@ -13,5 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 export const db = getFirestore(app)
-export { collection, addDoc, getDocs, query, where, doc, setDoc, updateDoc, getDoc }
+export const messaging = getMessaging(app)
+export { collection, addDoc, getDocs, query, where, doc, setDoc, updateDoc, getDoc, arrayUnion, increment }
 
